@@ -14,7 +14,7 @@ if (!cronExpression) {
 
 const start = async () => {
   await shellExec('restic check').catch(async () => {
-    await shellExec('borg init').then(shellLog)
+    await shellExec('restic init').then(shellLog)
   }).then(() => {
     fastify.log.info('Backup repository initialized.')
   })
