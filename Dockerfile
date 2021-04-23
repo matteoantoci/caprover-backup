@@ -10,4 +10,4 @@ RUN yarn --pure-lockfile
 
 EXPOSE 3000
 
-CMD yarn start
+CMD npx ts-node ./src/backup-volumes.ts
