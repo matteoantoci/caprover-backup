@@ -1,0 +1,21 @@
+{
+  "name": "backup",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "ts-node ./src/backup-volumes.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matteo Antoci",
+  "license": "ISC",
+  "dependencies": {
+    "node-cron": "^3.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.41",
+    "@types/node-cron": "^2.0.3",
+    "prettier": "^2.2.1"
+  }
+}

@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  app:
+    container_name: backup-server
+    image: "backup-server:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      RESTIC_PASSWORD: "my super secret passphrase"
+      RESTIC_REPOSITORY: "/backup"
+      RESTIC_CRON: "* * * * *"
+    volumes:
+      - /Users/mantoci/backup:/backup
+      - /Users/mantoci/volumes:/volumes
+#      - /var/lib/docker/volumes/:/volumes
+volumes:
+  myapp:
