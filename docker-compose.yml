@@ -9,7 +9,7 @@ services:
     environment:
       RESTIC_PASSWORD: "my super secret passphrase"
       RESTIC_REPOSITORY: "/backup"
-      RESTIC_CRON: "* * * * *"
+      VOLUMES_SCHEDULE: "* * * * *"
     volumes:
       - ./mocks/backup:/backup
       - ./mocks/volumes:/volumes

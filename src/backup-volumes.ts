@@ -2,36 +2,41 @@ import createServer from 'fastify'
 import { schedule } from 'node-cron'
 import { getDirectories, shellExec, shellLog } from './shell'
 
-const server = createServer({
-  logger: true,
-})
+const server = createServer()
 
-const cronExpression = process.env.RESTIC_CRON
-
-if (!cronExpression) {
-  server.log.error('"RESTIC_CRON" environment variable is not defined!')
+const volumesSchedule = process.env.VOLUMES_SCHEDULE
+if (!volumesSchedule) {
+  console.error('"VOLUMES_SCHEDULE" environment variable is not defined!')
   process.exit(1)
 }
 
-const getCaproverVolumeDirs = () => getDirectories('/volumes').filter(dir => dir.includes('captain--'))
+const getCaproverVolumeDirs = () => getDirectories('/volumes').filter((dir) => dir.includes('captain--'))
 
 const start = async () => {
-  await shellExec('restic check').catch(async () => {
-    await shellExec('restic init').then(shellLog)
-  }).then(() => {
-    server.log.info('Backup repository initialized.')
-  })
+  await shellExec('restic check')
+    .catch(async () => {
+      console.info('>>> Initializing backup repository...')
+      await shellExec('restic init').then(shellLog)
+    })
+    .then(() => {
+      console.info('>>> Backup repository initialized')
+    })
 
-  schedule(cronExpression, async () => {
-    const volumeDirs = getCaproverVolumeDirs().join(' ')
-    await shellExec(`restic backup ${volumeDirs}`).then(shellLog)
-  })
+  schedule(volumesSchedule, async () => {
+    const volumeDirs = getCaproverVolumeDirs()
+    if (!volumeDirs.length) return
+
+    console.info(`>>> Backing up ${volumeDirs.length} volume(s)...`)
+    await shellExec(`restic backup ${volumeDirs.join(' ')}`).then(shellLog)
+    console.info(`>>> Done`)
+  }).start()
+  console.info(`>>> Volumes backup cronjob scheduled at "${volumesSchedule}"`)
 
   await server.listen(3000)
-  server.log.info('Backup server started.')
+  console.info('>>> Backup server started... Enjoy =)')
 }
 
 start().catch((err) => {
-  server.log.error(err)
+  console.error(err)
   process.exit(1)
 })
