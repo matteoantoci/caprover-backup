@@ -1,10 +1,14 @@
 import { schedule } from 'node-cron'
 import { getDirectories, shellExec, shellLog } from './shell'
 
+const fastify = require('fastify')({
+  logger: true
+})
+
 const cronExpression = process.env.RESTIC_CRON
 
 if (!cronExpression) {
-  console.error('"RESTIC_CRON" environment variable is not defined!')
+  fastify.log.error('"RESTIC_CRON" environment variable is not defined!')
   process.exit(1)
 }
 
@@ -12,7 +16,7 @@ const start = async () => {
   await shellExec('restic check').catch(async () => {
     await shellExec('borg init').then(shellLog)
   }).then(() => {
-    console.info('Backup repository initialized.')
+    fastify.log.info('Backup repository initialized.')
   })
 
   schedule(cronExpression, async () => {
@@ -20,10 +24,11 @@ const start = async () => {
     await shellExec(`restic backup ${volumeDirs}`).then(shellLog)
   });
 
-  console.info('Backup server started.')
+  await fastify.listen(3000)
+  fastify.log.info('Backup server started.')
 }
 
 start().catch((err) => {
-  console.error(err)
+  fastify.log.error(err)
   process.exit(1)
 })
