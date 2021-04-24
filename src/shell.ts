@@ -1,13 +1,4 @@
 import { exec } from 'child_process'
-import { lstatSync, readdirSync } from 'fs'
-import { join } from 'path'
-
-const isDirectory = (source: string) => lstatSync(source).isDirectory()
-
-export const getDirectories = (source: string) =>
-  readdirSync(source)
-    .map((name) => join(source, name))
-    .filter(isDirectory)
 
 type ShellOutput = {
   stdout: string
