@@ -16,8 +16,10 @@ services:
       CAPROVER_URL: "https://captain.xxx.yyy.zzz"
       CAPROVER_PASSWORD: "my super secret caprover password"
     volumes:
-      - ./mocks/backup:/backup # Debug only
+#      - ./mocks/backup:/backup # Debug only
       - ./mocks/volumes:/volumes # Debug only
+      - ./mocks/captain:/captain # Debug only
+#      - /captain:/captain # Prod only
 #      - /var/lib/docker/volumes:/volumes # Prod only
 volumes:
   app:

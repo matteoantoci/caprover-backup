@@ -5,19 +5,12 @@ type ShellOutput = {
   stderr: string
 }
 
-export const shellExec = (command: string): Promise<ShellOutput> => {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error)
-        return
-      }
-      resolve({ stdout, stderr })
-    })
+export const shellExec = (command: string): Promise<ShellOutput> =>
+  new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => (error ? reject(error) : resolve({ stdout, stderr })))
   })
-}
 
-export const shellLog = (output: ShellOutput) => {
-  console.log(output.stdout)
-  console.log(output.stderr)
+export const shellLog = ({ stdout, stderr }: ShellOutput) => {
+  if (stdout.length) console.log(stdout)
+  if (stderr.length) console.error(stderr)
 }

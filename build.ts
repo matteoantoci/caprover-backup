@@ -9,8 +9,8 @@ const ENV_VARIABLES = Object.entries({
 
 const generateBuild = async () => {
   await build({
-    entry: 'src/backup.ts',
-    outfile: 'src/backup.js',
+    entry: 'src/index.ts',
+    outfile: 'src/index.js',
     define: ENV_VARIABLES,
     target: 'node14',
     platform: 'node',

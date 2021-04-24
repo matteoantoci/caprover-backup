@@ -8,6 +8,6 @@ RUN mkdir -p ${appDir}
 ADD . ${appDir}
 WORKDIR ${appDir}
 
-RUN yarn --pure-lockfile
+RUN yarn --pure-lockfile --prod
 
 CMD yarn start
