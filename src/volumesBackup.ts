@@ -17,7 +17,8 @@ export const scheduleVolumesBackup = (volumesSchedule: string) => {
       if (!volumeDirs.length) return
 
       console.info(`>>> Backing up ${volumeDirs.length} volume(s)...`)
-      await shellExec(`restic backup ${volumeDirs.join(' ')}`).then(shellLog)
+      await shellExec(`restic backup --tag volumes ${volumeDirs.join(' ')}`).then(shellLog)
+      await shellExec(`restic snapshots`).then(shellLog)
       console.info(`>>> Done`)
     } catch (e) {
       console.error('>>> Could not backup volumes!')
