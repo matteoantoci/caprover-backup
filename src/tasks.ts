@@ -29,7 +29,6 @@ const backupConfig = async (client: CaproverClient) => {
     throw new Error('>>> Could not find any Caprover *.tar file to backup!')
   }
 
-  console.info(`>>> Backing up ${backupTarFile}`)
   await shellExec(`mkdir -p ${SETTINGS.caprover.backupDirPath} && rm -rf ${SETTINGS.caprover.backupDirPath}/*`)
   await shellExec(`tar -xf ${backupTarFile} -C ${SETTINGS.caprover.backupDirPath}`)
 
@@ -43,7 +42,6 @@ export async function initializeRepository() {
   console.info('>>> Checking backup repository...')
 
   await shellExec('restic check').catch(async () => {
-    console.info('>>> Initializing backup repository...')
     await shellExec('restic init').then(shellLog)
   })
 
