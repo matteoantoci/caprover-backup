@@ -9,7 +9,7 @@ export const SETTINGS = {
   caprover: {
     publicUrl: getEnvVariable('CAPROVER_URL'),
     password: getEnvVariable('CAPROVER_PASSWORD'),
-    dirPath: '/caprover',
+    dirPath: '/captain',
     backupDirPath: '/home/caprover-config',
     appVolumePathPrefix: '/volumes/captain--',
   },
