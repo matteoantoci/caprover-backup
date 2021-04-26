@@ -5,12 +5,10 @@ const getEnvVariable = (key: string): string => {
 }
 
 export const SETTINGS = {
-  env: {
-    caproverBaseUrl: getEnvVariable('CAPROVER_URL'),
-    caproverPassword: getEnvVariable('CAPROVER_PASSWORD'),
-    schedule: getEnvVariable('SCHEDULE'),
-  },
+  schedule: getEnvVariable('SCHEDULE'),
   caprover: {
+    publicUrl: getEnvVariable('CAPROVER_URL'),
+    password: getEnvVariable('CAPROVER_PASSWORD'),
     dirPath: '/caprover',
     backupDirPath: '/home/caprover-config',
     appVolumePathPrefix: '/volumes/captain--',

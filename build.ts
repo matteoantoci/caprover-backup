@@ -4,7 +4,7 @@ import { SETTINGS } from './settings'
 const ENV_VARIABLES = Object.entries({
   ...process.env,
   NODE_ENV: 'production',
-  REACT_APP_DEFAULT_PASSWORD: SETTINGS.caproverPassword,
+  REACT_APP_DEFAULT_PASSWORD: SETTINGS.caprover.password,
 }).reduce((acc, [k, v]) => ({ ...acc, [`process.env.${k}`]: JSON.stringify(v) }), {})
 
 const generateBuild = async () => {

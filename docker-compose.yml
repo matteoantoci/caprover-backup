@@ -17,5 +17,6 @@ services:
     volumes:
       - ./mocks/volumes:/volumes # Use /var/lib/docker/volumes in prod
       - ./mocks/captain:/captain # Use /captain in prod
+      - ./mocks/backup:/backup # Only for debug purposes
 volumes:
   app:
