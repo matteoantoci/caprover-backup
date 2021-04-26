@@ -10,8 +10,7 @@ const backupVolumes = async (client: CaproverClient) => {
   const volumeDirs = activeVolumes.map((it) => `${SETTINGS.caprover.appVolumePathPrefix}${it}`)
 
   if (volumeDirs.length) {
-    const out = await shellExec(`restic backup --verbose --tag ${VOLUMES_TAG} ${volumeDirs.join(' ')}`)
-    shellLog(out)
+    await shellExec(`restic backup --verbose --tag ${VOLUMES_TAG} ${volumeDirs.join(' ')}`).then(shellLog)
   }
 
   console.info(`>>> Volumes backup completed successfully!`)
@@ -24,18 +23,15 @@ const backupConfig = async (client: CaproverClient) => {
 
   await client.createBackup()
 
-  const findOut = await shellExec(`find ${SETTINGS.caprover.dirPath} -type f -iname "*.tar" -printf "%p\\n" | sort -n | tail -1`)
-  shellLog(findOut) // TODO: remove
-  const backupTarFile = findOut.stdout
+  const findResult = await shellExec(`find ${SETTINGS.caprover.dirPath} -name "*.tar" | sort -n | tail -1`)
+  const backupTarFile = findResult.stdout.trim()
   if (!backupTarFile.length) {
     throw new Error('>>> Could not find any Caprover *.tar file to backup!')
   }
 
   await shellExec(`mkdir -p ${SETTINGS.caprover.backupDirPath} && rm -rf ${SETTINGS.caprover.backupDirPath}/*`)
   await shellExec(`tar -xf ${backupTarFile} -C ${SETTINGS.caprover.backupDirPath}`)
-
-  const out = await shellExec(`restic backup --verbose --tag ${CONFIG_TAG} ${SETTINGS.caprover.backupDirPath}`)
-  shellLog(out)
+  await shellExec(`restic backup --verbose --tag ${CONFIG_TAG} ${SETTINGS.caprover.backupDirPath}`).then(shellLog)
 
   console.info(`>>> Config backup completed successfully!`)
 }
@@ -43,9 +39,11 @@ const backupConfig = async (client: CaproverClient) => {
 export async function initializeRepository() {
   console.info('>>> Checking backup repository...')
 
-  await shellExec('restic check').catch(async () => {
-    await shellExec('restic init').then(shellLog)
-  })
+  await shellExec('restic check')
+    .then(shellLog)
+    .catch(async () => {
+      await shellExec('restic init').then(shellLog)
+    })
 
   console.info('>>> Backup repository ready!')
 }
@@ -55,7 +53,7 @@ export const backup = async (client: CaproverClient) => {
 
   await backupVolumes(client)
   await backupConfig(client)
-  await shellExec('restic check')
+  await shellExec('restic check').then(shellLog)
 
   console.info(`>>> Backup finished successfully!`)
 }
