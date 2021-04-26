@@ -24,7 +24,9 @@ const backupConfig = async (client: CaproverClient) => {
 
   await client.createBackup()
 
-  const { stdout: backupTarFile } = await shellExec(`find ${SETTINGS.caprover.dirPath} -type f -iname "*.tar" -printf "%p\\n" | sort -n | tail -1`)
+  const findOut = await shellExec(`find ${SETTINGS.caprover.dirPath} -type f -iname "*.tar" -printf "%p\\n" | sort -n | tail -1`)
+  shellLog(findOut) // TODO: remove
+  const backupTarFile = findOut.stdout
   if (!backupTarFile.length) {
     throw new Error('>>> Could not find any Caprover *.tar file to backup!')
   }
