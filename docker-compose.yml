@@ -8,18 +8,14 @@ services:
       dockerfile: Dockerfile
     environment:
       RESTIC_PASSWORD: "my super secret passphrase"
-      RESTIC_REPOSITORY: "/backup" # Debug only
-#      RESTIC_REPOSITORY: "b2:bucket-name:/" # Prod only
+      RESTIC_REPOSITORY: "/backup" # Use "b2:bucket-name:/" in prod
 #      B2_ACCOUNT_ID: "XXX" # Prod only
 #      B2_ACCOUNT_KEY: "YYY" # Prod only
-      VOLUMES_SCHEDULE: "* * * * *"
+      SCHEDULE: "* * * * *"
       CAPROVER_URL: "https://captain.xxx.yyy.zzz"
       CAPROVER_PASSWORD: "my super secret caprover password"
     volumes:
-#      - ./mocks/backup:/backup # Debug only
-      - ./mocks/volumes:/volumes # Debug only
-      - ./mocks/captain:/captain # Debug only
-#      - /captain:/captain # Prod only
-#      - /var/lib/docker/volumes:/volumes # Prod only
+      - ./mocks/volumes:/volumes # Use /var/lib/docker/volumes in prod
+      - ./mocks/captain:/captain # Use /captain in prod
 volumes:
   app:

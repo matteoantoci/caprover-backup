@@ -1,35 +1,40 @@
 import { CaproverClient } from './caproverClient'
 import { shellExec, shellLog } from './shell'
+import { SETTINGS } from '../settings'
 
-const VOLUMES_TAG = 'caprover-volumes'
+const VOLUMES_TAG = 'volumes'
 
-export const backupVolumes = async (client: CaproverClient) => {
+const backupVolumes = async (client: CaproverClient) => {
   console.info(`>>> Starting volumes backup...`)
-  try {
-    const activeVolumes = await client.getActiveVolumeNames()
-    const volumeDirs = activeVolumes.map((it) => `/volumes/captain--${it}`) // TODO: extract const
+  const activeVolumes = await client.getActiveVolumeNames()
+  const volumeDirs = activeVolumes.map((it) => `${SETTINGS.caprover.appVolumePathPrefix}${it}`)
 
-    const backupVolumesCommand = `restic backup --verbose --tag ${VOLUMES_TAG} ${volumeDirs.join(' ')}`
-    const out = await shellExec(backupVolumesCommand)
-
-    console.info(`>>> Volumes backup completed successfully!`)
+  if (volumeDirs.length) {
+    const out = await shellExec(`restic backup --verbose --tag ${VOLUMES_TAG} ${volumeDirs.join(' ')}`)
     shellLog(out)
-  } catch (e) {
-    console.error('>>> Could not backup volumes!')
-    console.error(e)
   }
+
+  console.info(`>>> Volumes backup completed successfully!`)
 }
 
-export const backupConfig = async (_: CaproverClient) => {
+const CONFIG_TAG = 'config'
+
+const backupConfig = async (client: CaproverClient) => {
   console.info(`>>> Starting config backup...`)
-  try {
-    // TODO...
-    console.info(`>>> Config backup completed successfully!`)
-    // shellLog(out)
-  } catch (e) {
-    console.error('>>> Could not backup config!')
-    console.error(e)
+
+  await client.createBackup()
+
+  const { stdout: backupTarFile } = await shellExec(`find ${SETTINGS.caprover.dirPath} -type f -iname "*.tar" -printf "%p\\n" | sort -n | tail -1`)
+  if (!backupTarFile.length) {
+    throw new Error('>>> Could not find any Caprover *.tar file to backup!')
   }
+
+  await shellExec(`tar -xf ${backupTarFile} -C ${SETTINGS.caprover.backupDirPath}`)
+
+  const out = await shellExec(`restic backup --verbose --tag ${CONFIG_TAG} ${SETTINGS.caprover.backupDirPath}`)
+  shellLog(out)
+
+  console.info(`>>> Config backup completed successfully!`)
 }
 
 export async function initializeRepository() {
@@ -41,4 +46,14 @@ export async function initializeRepository() {
   })
 
   console.info('>>> Backup repository ready!')
+}
+
+export const backup = async (client: CaproverClient) => {
+  console.info(`>>> Starting backup...`)
+
+  await backupVolumes(client)
+  await backupConfig(client)
+  await shellExec('restic check')
+
+  console.info(`>>> Backup finished successfully!`)
 }
