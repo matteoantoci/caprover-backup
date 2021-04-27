@@ -30,7 +30,7 @@ const backupConfig = async (client: CaproverClient) => {
   }
 
   await shellExec(`mkdir -p ${SETTINGS.caprover.backupDirPath} && rm -rf ${SETTINGS.caprover.backupDirPath}/*`)
-  await shellExec(`tar -xf ${backupTarFile} -C ${SETTINGS.caprover.backupDirPath}`)
+  await shellExec(`mv ${backupTarFile} ${SETTINGS.caprover.backupDirPath}/backup.tar`)
   await shellExec(`restic backup --verbose --tag ${CONFIG_TAG} ${SETTINGS.caprover.backupDirPath}`).then(shellLog)
 
   console.info(`>>> Config backup completed successfully!`)
