@@ -1,17 +1,16 @@
 import { CaproverClient } from './caproverClient'
 import { shellExec, shellLog } from './shell'
 import { SETTINGS } from './settings'
-import cuid from 'cuid'
 
 const VOLUMES_TAG = 'volumes'
 
-const backupVolumes = async (client: CaproverClient, backupId: string) => {
+const backupVolumes = async (client: CaproverClient) => {
   console.info(`>>> Starting volumes backup...`)
   const activeVolumes = await client.getActiveVolumeNames()
   const volumeDirs = activeVolumes.map((it) => `${SETTINGS.caprover.appVolumePathPrefix}${it}`)
 
   if (volumeDirs.length) {
-    await shellExec(`restic backup --verbose --tag ${VOLUMES_TAG} --tag ${backupId} ${volumeDirs.join(' ')}`).then(shellLog)
+    await shellExec(`restic backup --verbose --tag ${VOLUMES_TAG} ${volumeDirs.join(' ')}`).then(shellLog)
   }
 
   console.info(`>>> Volumes backup completed successfully!`)
@@ -19,7 +18,7 @@ const backupVolumes = async (client: CaproverClient, backupId: string) => {
 
 const CONFIG_TAG = 'config'
 
-const backupConfig = async (client: CaproverClient, backupId: string) => {
+const backupConfig = async (client: CaproverClient) => {
   console.info(`>>> Starting config backup...`)
 
   await client.createBackup()
@@ -33,7 +32,7 @@ const backupConfig = async (client: CaproverClient, backupId: string) => {
   await shellExec(`mkdir -p ${SETTINGS.caprover.backupDirPath} && rm -rf ${SETTINGS.caprover.backupDirPath}/*`)
   await shellExec(`tar -xf ${backupTarFile} -C ${SETTINGS.caprover.backupDirPath}`)
   await shellExec(`rm -f ${backupTarFile}`)
-  await shellExec(`restic backup --verbose --tag ${CONFIG_TAG} --tag ${backupId} ${SETTINGS.caprover.backupDirPath}`).then(shellLog)
+  await shellExec(`restic backup --verbose --tag ${CONFIG_TAG} ${SETTINGS.caprover.backupDirPath}`).then(shellLog)
 
   console.info(`>>> Config backup completed successfully!`)
 }
@@ -53,9 +52,8 @@ export async function initializeRepository() {
 export const backup = async (client: CaproverClient) => {
   console.info(`>>> Starting backup...`)
 
-  const backupId = cuid()
-  await backupVolumes(client, backupId)
-  await backupConfig(client, backupId)
+  await backupVolumes(client)
+  await backupConfig(client)
   await shellExec('restic check').then(shellLog)
 
   console.info(`>>> Backup finished successfully!`)
