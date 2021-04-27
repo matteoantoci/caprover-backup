@@ -1,5 +1,5 @@
 import { schedule } from 'node-cron'
-import { SETTINGS } from '../settings'
+import { SETTINGS } from './settings'
 import { CaproverClient, createCaproverClient } from './caproverClient'
 import { backup, initializeRepository } from './tasks'
 

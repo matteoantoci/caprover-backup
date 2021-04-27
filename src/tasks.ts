@@ -1,6 +1,6 @@
 import { CaproverClient } from './caproverClient'
 import { shellExec, shellLog } from './shell'
-import { SETTINGS } from '../settings'
+import { SETTINGS } from './settings'
 
 const VOLUMES_TAG = 'volumes'
 
