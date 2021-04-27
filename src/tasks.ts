@@ -1,10 +1,10 @@
-import { CaproverClient } from './caproverClient'
+import { CapRoverClient } from './capRoverClient'
 import { shellExec, shellLog } from './shell'
 import { SETTINGS } from './settings'
 
 const VOLUMES_TAG = 'volumes'
 
-const backupVolumes = async (client: CaproverClient) => {
+const backupVolumes = async (client: CapRoverClient) => {
   console.info(`>>> Starting volumes backup...`)
   const activeVolumes = await client.getActiveVolumeNames()
   const volumeDirs = activeVolumes.map((it) => `${SETTINGS.caprover.appVolumePathPrefix}${it}`)
@@ -18,7 +18,7 @@ const backupVolumes = async (client: CaproverClient) => {
 
 const CONFIG_TAG = 'config'
 
-const backupConfig = async (client: CaproverClient) => {
+const backupConfig = async (client: CapRoverClient) => {
   console.info(`>>> Starting config backup...`)
 
   await client.createBackup()
@@ -26,7 +26,7 @@ const backupConfig = async (client: CaproverClient) => {
   const findResult = await shellExec(`find ${SETTINGS.caprover.dirPath} -name "*.tar" | sort -n | tail -1`)
   const backupTarFile = findResult.stdout.trim()
   if (!backupTarFile.length) {
-    throw new Error('>>> Could not find any Caprover *.tar file to backup!')
+    throw new Error('>>> Could not find any CapRover *.tar file to backup!')
   }
 
   await shellExec(`mkdir -p ${SETTINGS.caprover.backupDirPath} && rm -rf ${SETTINGS.caprover.backupDirPath}/*`)
@@ -49,7 +49,7 @@ export async function initializeRepository() {
   console.info('>>> Backup repository ready!')
 }
 
-export const backup = async (client: CaproverClient) => {
+export const backup = async (client: CapRoverClient) => {
   console.info(`>>> Starting backup...`)
 
   await backupVolumes(client)

@@ -1,6 +1,6 @@
 import { schedule } from 'node-cron'
 import { SETTINGS } from './settings'
-import { CaproverClient, createCaproverClient } from './caproverClient'
+import { CapRoverClient, createCapRoverClient } from './capRoverClient'
 import { backup, initializeRepository } from './tasks'
 
 const handleError = (err: Error) => {
@@ -8,7 +8,7 @@ const handleError = (err: Error) => {
   process.exit(1)
 }
 
-const start = async (client: CaproverClient) => {
+const start = async (client: CapRoverClient) => {
   console.info(`>>> Starting Caprover backup server...`)
   await initializeRepository()
 
@@ -20,5 +20,5 @@ const start = async (client: CaproverClient) => {
   console.info('>>> Caprover backup server started!')
 }
 
-const client = createCaproverClient(SETTINGS.caprover.publicUrl)
+const client = createCapRoverClient(SETTINGS.caprover.publicUrl)
 start(client).catch(handleError)

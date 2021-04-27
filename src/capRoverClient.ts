@@ -1,12 +1,12 @@
 import Constants from 'caprover/src/utils/Constants'
 import ApiManager from 'caprover/src/api/ApiManager'
 
-export type CaproverClient = {
+export type CapRoverClient = {
   getActiveVolumeNames: () => Promise<string[]>
   createBackup: () => Promise<void>
 }
 
-export const createCaproverClient = (appUrl: string): CaproverClient => {
+export const createCapRoverClient = (appUrl: string): CapRoverClient => {
   const apiManager = new ApiManager(appUrl + Constants.BASE_API_PATH, () => Promise.resolve())
   return {
     getActiveVolumeNames: async () =>
