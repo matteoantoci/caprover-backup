@@ -40,16 +40,11 @@ const backupConfig = async (client: CapRoverClient) => {
 export async function initializeRepository() {
   console.info('>>> Checking backup repository...')
 
-  await shellExec('restic unlock').then(shellLog)
-  await shellExec('restic check').then(shellLog)
-
-  // try {
-  //   await shellExec('restic unlock').then(shellLog)
-  //   await shellExec('restic check').then(shellLog)
-  // } catch (e) {
-  //   console.info('>>> Cannot check repository!', e)
-  //   await shellExec('restic init').then(shellLog)
-  // }
+  await shellExec('restic check')
+    .then(shellLog)
+    .catch(async () => {
+      await shellExec('restic init').then(shellLog)
+    })
 
   console.info('>>> Backup repository ready!')
 }
