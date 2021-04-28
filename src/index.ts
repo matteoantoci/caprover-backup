@@ -26,13 +26,13 @@ const startCronJob = (client: CapRoverClient) => {
 }
 
 const start = async () => {
-  console.info(`ℹ️ Starting Caprover backup server...`)
+  console.info(`ℹ️ Starting CapRover backup server...`)
 
   await initializeRepository()
 
   startCronJob(createCapRoverClient(SETTINGS.capRover.publicUrl))
 
-  console.info('✅ Caprover backup server started!')
+  console.info('✅ CapRover backup server started!')
 }
 
 start().catch(exit)
