@@ -10,9 +10,9 @@ services:
       RESTIC_PASSWORD: "my super secret passphrase"
       RESTIC_REPOSITORY: "/backup" # Use "b2:bucket-name:/" in prod
       BACKUP_CRON: "* * * * *"
-      BACKUP_DURATION: "2y5m7d3h" # Optional
-      CAPROVER_URL: "https://captain.xxx.yyy.zzz"
-      CAPROVER_PASSWORD: "my super secret caprover password"
+      BACKUP_DURATION: "0y1m0d0h" # Optional
+      CAP_ROVER_URL: "https://captain.xxx.yyy.zzz"
+      CAP_ROVER_PASSWORD: "my super secret caprover password"
       #      B2_ACCOUNT_ID: "XXX" # Prod only
       #      B2_ACCOUNT_KEY: "YYY" # Prod only
     volumes:
