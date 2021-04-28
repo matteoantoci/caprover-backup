@@ -2,11 +2,9 @@ import { schedule } from 'node-cron'
 import { SETTINGS } from './settings'
 import { CapRoverClient, createCapRoverClient } from './capRoverClient'
 import { backup, initializeRepository } from './tasks'
-import { shellExec, shellLog } from './shell'
 
 const handleError = async (err: Error) => {
   console.error(err)
-  await shellExec('restic unlock').then(shellLog).catch(console.error)
   process.exit(1)
 }
 
