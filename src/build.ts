@@ -7,6 +7,8 @@ const ENV_VARIABLES = Object.entries({
   REACT_APP_DEFAULT_PASSWORD: SETTINGS.capRover.password,
 }).reduce((acc, [k, v]) => ({ ...acc, [`process.env.${k}`]: JSON.stringify(v) }), {})
 
+console.log(ENV_VARIABLES)
+
 const generateBuild = async () => {
   await build({
     entry: 'src/index.ts',
