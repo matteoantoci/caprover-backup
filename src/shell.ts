@@ -7,7 +7,7 @@ type ShellOutput = {
 
 export const shellExec = (command: string): Promise<ShellOutput> =>
   new Promise((resolve, reject) => {
-    console.info(`$ ${command}`)
+    console.info(`⚙️ ${command}`)
     exec(command, (error, stdout, stderr) => (error ? reject(error) : resolve({ stdout, stderr })))
   })
 
