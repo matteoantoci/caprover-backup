@@ -1,40 +1,29 @@
 import { schedule } from 'node-cron'
-import exitHook from 'async-exit-hook'
 import { SETTINGS } from './settings'
 import { CapRoverClient, createCapRoverClient } from './capRoverClient'
 import { backup, initializeRepository } from './tasks'
 
-const handleExit = (callback: () => void) => {
-  console.info('>>> Exiting...')
-  callback()
-}
-
-const handleError = (err: Error, callback: () => void) => {
+const exit = (err: Error) => {
   console.error('>>> An unexpected error occurred!', err.stack)
-  handleExit(callback)
+  process.exit(1)
 }
 
-exitHook(handleExit)
-exitHook.uncaughtExceptionHandler(handleError)
-exitHook.unhandledRejectionHandler(handleError)
-
-const gracefulExit = (err: Error) =>
-  handleError(err, () => {
-    process.exit(1)
+const startCronJob = (client: CapRoverClient) => {
+  const cronExpression = SETTINGS.backup.cron
+  schedule(cronExpression, () => {
+    backup(client).catch(exit)
   })
+  console.info(`>>> "${cronExpression}" cron started`)
+}
 
-const start = async (client: CapRoverClient) => {
+const start = async () => {
   console.info(`>>> Starting Caprover backup server...`)
+
   await initializeRepository()
 
-  const cronExpression = SETTINGS.backup.cron
-  console.info(`>>> Scheduling backups at "${cronExpression}"...`)
-  schedule(cronExpression, () => {
-    backup(client).catch(gracefulExit)
-  })
+  startCronJob(createCapRoverClient(SETTINGS.capRover.publicUrl))
 
   console.info('>>> Caprover backup server started!')
 }
 
-const client = createCapRoverClient(SETTINGS.capRover.publicUrl)
-start(client).catch(gracefulExit)
+start().catch(exit)
