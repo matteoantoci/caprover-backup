@@ -61,4 +61,8 @@ export const backup = async (client: CapRoverClient) => {
   await shellExec('restic check').then(shellLog)
 
   console.info(`✅ Backup finished successfully!`)
+
+  await client.cleanUp()
+
+  console.info(`✅ Unused images cleaned up successfully!`)
 }

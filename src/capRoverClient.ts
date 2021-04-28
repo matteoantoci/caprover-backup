@@ -4,6 +4,11 @@ import ApiManager from 'caprover/src/api/ApiManager'
 export type CapRoverClient = {
   getActiveVolumeNames: () => Promise<string[]>
   createBackup: () => Promise<void>
+  cleanUp: () => Promise<void>
+}
+
+type UnusedImages = {
+  unusedImages: { id: string }[]
 }
 
 export const createCapRoverClient = (appUrl: string): CapRoverClient => {
@@ -18,6 +23,10 @@ export const createCapRoverClient = (appUrl: string): CapRoverClient => {
       ),
     createBackup: async () => {
       await apiManager.callApi('/user/system/createbackup', 'POST', {})
+    },
+    cleanUp: async () => {
+      const { unusedImages }: UnusedImages = await apiManager.getUnusedImages(2)
+      await apiManager.deleteImages(unusedImages.map(it => it.id))
     },
   }
 }
