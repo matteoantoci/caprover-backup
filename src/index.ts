@@ -12,13 +12,14 @@ const start = async (client: CapRoverClient) => {
   console.info(`>>> Starting Caprover backup server...`)
   await initializeRepository()
 
-  console.info(`>>> Scheduling backups at "${SETTINGS.schedule}"...`)
-  schedule(SETTINGS.schedule, () => {
+  const cronExpression = SETTINGS.backup.cron
+  console.info(`>>> Scheduling backups at "${cronExpression}"...`)
+  schedule(cronExpression, () => {
     backup(client).catch(handleError)
   })
 
   console.info('>>> Caprover backup server started!')
 }
 
-const client = createCapRoverClient(SETTINGS.caprover.publicUrl)
+const client = createCapRoverClient(SETTINGS.capRover.publicUrl)
 start(client).catch(handleError)
