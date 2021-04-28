@@ -49,8 +49,6 @@ export async function initializeRepository() {
 }
 
 export const backup = async (client: CapRoverClient) => {
-  console.info(`ℹ️ Starting backup...`)
-
   await backupVolumes(client)
   await backupConfig(client)
 

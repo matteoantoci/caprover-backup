@@ -22,7 +22,7 @@ const startCronJob = (client: CapRoverClient) => {
   schedule(cronExpression, () => {
     backup(client).catch(exit)
   })
-  console.info(`✅ "${cronExpression}" cron started`)
+  console.info(`✅ "${cronExpression}" cron started!`)
 }
 
 const start = async () => {
