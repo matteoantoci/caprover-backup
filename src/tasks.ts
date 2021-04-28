@@ -41,7 +41,6 @@ export async function initializeRepository() {
   console.info('>>> Preparing backup repository...')
 
   await shellExec('restic snapshots')
-    .then(shellLog)
     .catch(async () => {
       await shellExec('restic init').then(shellLog)
     })
